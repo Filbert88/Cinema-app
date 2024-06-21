@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  topup
+  withdraw
+}
+
+model User {
+  id           String               @id @default(uuid())
+  email        String               @unique
+  name         String
+  password     String
+  balance      BigInt               @default(0)
+  tickets      Ticket[]
+  transactions BalanceTransaction[]
+}
+
+model Movie {
+  id           BigInt   @id @default(autoincrement())
+  title        String   @db.VarChar(200)
+  description  String   @db.VarChar(1000)
+  release_date String
+  poster_url   String
+  age_rating   Int
+  ticket_price Int
+  tickets      Ticket[]
+}
+
+model Ticket {
+  id         String   @id @default(uuid())
+  timeStart  DateTime
+  seatNumber Int
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  movieId    BigInt
+  movie      Movie    @relation(fields: [movieId], references: [id])
+}
+
+model BalanceTransaction {
+  id     String          @id @default(uuid())
+  time   DateTime        @default(now())
+  amount Int
+  userId String
+  user   User            @relation(fields: [userId], references: [id])
+  type   TransactionType
+}

@@ -6,19 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ts-node": "ts-node --compiler-options '{\"module\" : \"CommonJS\"}'"
   },
   "dependencies": {
+    "@prisma/client": "^5.15.1",
+    "next": "14.2.4",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.4"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@types/node": "^20.14.7",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1"
-  }
+    "prisma": "^5.15.1",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  },
+  "prisma": {
+  "seed": "node --loader ts-node/esm prisma/seed.ts"
+},
+  "type": "module"
 }
