@@ -11,7 +11,7 @@ export const Card: React.FC<CardProps> = ({ path, title, desc }) => {
   return (
     <div>
       <div className="">
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center">
           <div className="relative w-[250px]">
             <Image className="aspect-[2/3] w-full rounded-xl" src={path} alt={title} height={375} width={250} objectFit="cover" />
           </div>
