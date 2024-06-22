@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";  
+import { signIn } from "next-auth/react";
 
 interface Errors {
   email: string;
@@ -20,6 +21,7 @@ const Signin: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
   const [touched, setTouched] = useState<Touched>({ email: false, password: false });
+  const [submitError, setSubmitError] = useState<string>("");
 
   const handleBlur = (field: keyof Touched): void => {
     setTouched({ ...touched, [field]: true });
@@ -60,16 +62,37 @@ const Signin: React.FC = () => {
     return "";
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
-    
-    router.push('/'); 
+
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    if (emailError || passwordError) {
+      setErrors({ email: emailError, password: passwordError });
+      setTouched({ email: true, password: true });
+      return;
+    }
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    console.log(result)
+    if (result?.error) {
+      setSubmitError(result.error);
+    } else {
+      router.push("/");
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <div className="text-4xl mb-6">Sign In</div>
+        <div className="text-4xl mb-6 font-bold">Sign In</div>
+        {submitError && <div className="text-red mb-4">{submitError}</div>}
         <div className="flex flex-col space-y-6 font-normal items-center">
           <input
             placeholder="Email"

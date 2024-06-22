@@ -1,12 +1,13 @@
 import React from "react";
 import Image from "next/image";
-import { Movie } from "../app/mainPage/page";
+import { Movie } from "./mainPage";
 
 interface PopupProps {
   movie: Movie;
+  session: any;
 }
 
-export default function Popup({ movie } : PopupProps) {
+export default function Popup({ movie, session } : PopupProps) {
   const getAdjustedDate = (offsetHours = 7) => {
     const date = new Date();
     date.setHours(date.getHours() + offsetHours);
@@ -46,6 +47,15 @@ export default function Popup({ movie } : PopupProps) {
   const isPastTime = (date: string, time: string) => {
     const dateTime = parseDateString(date, time);
     return dateTime < new Date();
+  };
+
+  // untuk ngebook ticket
+  const handleTimeClick = (date: string, time: string) => {
+    if (session && session.user) {
+      alert(`User ${session.user.id} selected time ${time} on ${date}`);
+    } else {
+      alert("Please sign in to book a ticket");
+    }
   };
 
   return (
@@ -120,7 +130,7 @@ export default function Popup({ movie } : PopupProps) {
                         : "border-red"
                     }`}
                     onClick={() =>
-                      !isPastTime(session.date, time)
+                      !isPastTime(session.date, time) && handleTimeClick(session.date, time)
                     }
                   >
                     {time}
@@ -138,6 +148,12 @@ export default function Popup({ movie } : PopupProps) {
           <div className="font-bold text-xl sm:text-2xl">Description</div>
           <div className="text-justify font-normal">{movie.description}</div>
         </div>
+        {session && session.user && (
+          <div className="mt-4">
+            <div className="font-bold text-xl sm:text-2xl">Logged in as:</div>
+            <div>{session.user.name} ({session.user.email})</div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,16 +1,43 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const SignUp: React.FC = () => {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push("/signin");
+
+    try {
+      const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push("/signin");
+      } else {
+        if (data.errors) {
+          const detailedErrors = data.errors.map((error: any) => error.message).join(", ");
+          setError(detailedErrors);
+        } else {
+          setError(data.message || "An error occurred");
+        }
+      }
+    } catch (err) {
+      setError("An error occurred");
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -20,22 +47,22 @@ const SignUp: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <div className="text-4xl mb-6">Sign Up</div>
+        <div className="text-4xl mb-6 font-bold">Sign Up</div>
+        {error && <div className="text-red mb-4">{error}</div>}
         <div className="flex flex-col space-y-6 font-normal">
-          <input
-            placeholder="Name"
-            className="py-4 px-5 w-[350px] text-black rounded-md"
-            required
-          />
-          <input
-            placeholder="Age"
-            type="number"
-            className="py-4 px-5 w-[350px] text-black rounded-md"
-            required
-          />
           <input
             placeholder="Username"
             className="py-4 px-5 w-[350px] text-black rounded-md"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="py-4 px-5 w-[350px] text-black rounded-md"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <div className="relative w-[350px]">
@@ -47,11 +74,19 @@ const SignUp: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            {password && 
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={togglePasswordVisibility}>
-                <Image src="/visible.svg" alt="visible" width={20} height={20} />
+            {password && (
+              <div
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                onClick={togglePasswordVisibility}
+              >
+                <Image
+                  src="/visible.svg"
+                  alt="visible"
+                  width={20}
+                  height={20}
+                />
               </div>
-            }
+            )}
           </div>
         </div>
         <button

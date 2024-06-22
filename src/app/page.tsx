@@ -1,5 +1,6 @@
 import Popup from "../components/popup";
 import  Mainpage  from "./mainPage/page";
+// import Mainpage from "../components/mainPage";
 
 export default function Home() {
   return (
