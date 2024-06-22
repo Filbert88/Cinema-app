@@ -10,8 +10,9 @@ interface PopupProps {
 export default function Popup({ movie, session } : PopupProps) {
   const getAdjustedDate = (offsetHours = 7) => {
     const date = new Date();
-    date.setHours(date.getHours() + offsetHours);
-    return date;
+    const utc = date.getTime() + date.getTimezoneOffset() * 60000;
+    const adjustedDate = new Date(utc + 3600000 * offsetHours);
+    return adjustedDate;
   };
 
   const parseDateString = (dateString: string, timeString: string) => {
@@ -126,8 +127,8 @@ export default function Popup({ movie, session } : PopupProps) {
                     key={time}
                     className={`border p-3 rounded-lg w-fit ${
                       isPastTime(session.date, time)
-                        ? "bg-gray-500 text-white cursor-not-allowed"
-                        : "border-red"
+                        ? "bg-gray-700 text-white border-none cursor-not-allowed"
+                        : "border-[#64ffda]"
                     }`}
                     onClick={() =>
                       !isPastTime(session.date, time) && handleTimeClick(session.date, time)
