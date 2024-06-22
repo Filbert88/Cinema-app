@@ -49,11 +49,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        return {
+        const user = {
           id: existingUser.id.toString(),
-          username: existingUser.name,
+          name: existingUser.name,
           email: existingUser.email,
         };
+
+        return user;
       },
     }),
   ],
@@ -61,14 +63,18 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-        if (token && typeof token.id === "string") {
-          session.user.id = token.id;
-        }
-        return session;
-      },
+      if (token && typeof token.id === "string") {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+      }
+      return session;
+    },
   },
 };
