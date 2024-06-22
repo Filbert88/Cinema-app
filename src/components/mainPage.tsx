@@ -27,11 +27,12 @@ export default function Mainpage({ movies, session }: MainpageProps) {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handleCardClick = (movie: Movie) => {
-    const userId =
-      clientSession && clientSession.user
-        ? clientSession.user.id
-        : session.user.id;
-    router.push(`/movies/${movie.id}?user=${userId}`);
+    if (clientSession && clientSession.user) {
+      const userId = clientSession.user.id;
+      router.push(`/movies/${movie.id}?user=${userId}`);
+    } else {
+      router.push(`/movies/${movie.id}`);
+    }
   };
 
   if (status === "loading") {
@@ -52,7 +53,6 @@ export default function Mainpage({ movies, session }: MainpageProps) {
           />
         ))}
       </div>
-      {/* {selectedMovie && <Popup movie={selectedMovie} session={session} />} */}
     </div>
   );
 }
