@@ -1,4 +1,4 @@
-import Signin from '@/components/signin'
+import Signin from '@/src/components/signin'
 import React from 'react'
 
 export default function SingInPage() {
