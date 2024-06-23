@@ -1,11 +1,11 @@
-import React from "react";
-import { format, parseISO } from "date-fns";  // Import necessary functions
+import React, { useState, useEffect } from "react";
+import { format, parseISO } from "date-fns"; // Import necessary functions
 
 interface Transaction {
   id: number;
   type: "withdraw" | "topup";
   amount: number;
-  timestamp: string;
+  time: string;
 }
 
 interface TransactionModalProps {
@@ -17,13 +17,35 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   isOpen,
   toggleModal,
 }) => {
-  if (!isOpen) return null;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const transactions: Transaction[] = [
-    { id: 1, type: "withdraw", amount: 5000, timestamp: "2023-06-24T10:00:00Z" },
-    { id: 2, type: "topup", amount: 20000, timestamp: "2023-06-23T15:00:00Z" },
-    { id: 3, type: "topup", amount: 15000, timestamp: "2023-06-23T12:30:00Z" },
-  ];
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch("/api/transaction");
+        const data = await response.json();
+
+        if (response.ok) {
+          setTransactions(data);
+        } else {
+          setError(data.message || "Failed to fetch transactions");
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        setError("Failed to fetch transactions");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchTransactions();
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
@@ -32,15 +54,33 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           Transaction History
         </div>
         <div className="text-center">
-          {transactions.map((transaction) => (
-            <div key={transaction.id} className="mb-2">
-              <span className="text-white">{format(parseISO(transaction.timestamp), 'MMMM dd, yyyy \'at\' h:mm a')}</span>
-              {' - '}
-              <span className={`text-${transaction.type === "topup" ? "customGreen" : "red"}`}>
-                {transaction.type === "topup" ? "+" : "-"}Rp {transaction.amount}
-              </span>
-            </div>
-          ))}
+          {loading ? (
+            <div className="text-white">Loading...</div>
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
+          ) : transactions.length === 0 ? (
+            <div className="text-white">No transactions found.</div>
+          ) : (
+            transactions.map((transaction) => (
+              <div key={transaction.id} className="mb-2">
+                <span className="text-white">
+                  {format(
+                    parseISO(transaction.time),
+                    "MMMM dd, yyyy 'at' h:mm a"
+                  )}
+                </span>
+                {" - "}
+                <span
+                  className={`text-${
+                    transaction.type === "topup" ? "customGreen" : "red"
+                  }`}
+                >
+                  {transaction.type === "topup" ? "+" : "-"}Rp{" "}
+                  {transaction.amount}
+                </span>
+              </div>
+            ))
+          )}
         </div>
         <div className="flex flex-row justify-center">
           <button

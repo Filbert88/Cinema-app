@@ -18,7 +18,7 @@ const BalancePage = async () => {
 
   const initialBalance = user?.balance ? Number(user.balance) : 0;
 
-  return <Balance initialBalance={initialBalance} userId={session.user.id} />;
+  return <Balance initialBalance={initialBalance} userId={session.user.id} username = {session.user.name} />;
 };
 
 export default BalancePage;

@@ -17,9 +17,10 @@ interface ToastState {
 interface BalanceProps {
   initialBalance: number;
   userId: string;
+  username: string;
 }
 
-const Balance: React.FC<BalanceProps> =     ({initialBalance, userId}) => {
+const Balance: React.FC<BalanceProps> = ({initialBalance, userId, username}) => {
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
@@ -40,7 +41,7 @@ const Balance: React.FC<BalanceProps> =     ({initialBalance, userId}) => {
   return (
     <div className="flex flex-col min-h-screen items-center justify-center p-5 sm:p-10 bg-black">
       <div>
-        <div className="text-center text-5xl">Hello Filbert</div>
+        <div className="text-center text-5xl">Hello {username}</div>
         <div className="text-3xl">Current Balance: Rp {balance}</div>
         <div className="space-x-6 justify-center flex flex-row mt-8">
           <button onClick={toggleWithdrawModal} className="border rounded-lg border-[#64ffda] text-[#64ffda] py-3 px-5">
