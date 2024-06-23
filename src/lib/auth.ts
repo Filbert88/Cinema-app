@@ -29,15 +29,17 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials");
           return null;
         }
 
+        console.log("User credentials:", credentials)
         const existingUser = await db.user.findUnique({
           where: { email: credentials?.email },
         });
 
         if (!existingUser) {
-          return null;
+          throw new Error("Email not found");
         }
 
         const passwordMatch = await compare(
@@ -46,7 +48,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!passwordMatch) {
-          return null;
+          throw new Error("Invalid password");
         }
 
         const user = {

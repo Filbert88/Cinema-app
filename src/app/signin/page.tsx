@@ -3,6 +3,6 @@ import React from 'react'
 
 export default function SingInPage() {
   return (
-    <div><Signin /></div>
+    <main className="flex flex-auto items-center justify-center bg-black min-h-screen overflow-hidden"><Signin /></main>
   )
 }

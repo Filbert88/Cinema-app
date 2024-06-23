@@ -89,7 +89,7 @@ const Signin: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="relative bottom-20 flex w-full max-w-xs flex-col gap-5 sm:bottom-0 lg:bottom-20 xl:gap-7">
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <div className="text-4xl mb-6 font-bold">Sign In</div>
         {submitError && <div className="text-red mb-4">{submitError}</div>}

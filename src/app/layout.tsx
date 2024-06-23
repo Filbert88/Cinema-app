@@ -20,8 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body style={{ fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
-        <Navbar/>
-        <Providers>{children}</Providers>
+        <Navbar />
+        <Providers>
+          <div style={{ paddingTop: "60px" }}>
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

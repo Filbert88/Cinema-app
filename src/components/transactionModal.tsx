@@ -47,6 +47,14 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
   if (!isOpen) return null;
 
+  const formatRupiah = (value: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 2,
+    }).format(value);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
       <div className="bg-black p-5 rounded-lg border-2 border-[#64ffda] max-h-[600px] overflow-y-auto custom-scrollbar">
@@ -75,8 +83,8 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     transaction.type === "topup" ? "customGreen" : "red"
                   }`}
                 >
-                  {transaction.type === "topup" ? "+" : "-"}Rp{" "}
-                  {transaction.amount}
+                  {transaction.type === "topup" ? "+" : "-"}
+                  {formatRupiah(transaction.amount)}
                 </span>
               </div>
             ))
