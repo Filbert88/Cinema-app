@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Toast from "./toast";
+import { ToastState } from "./balance";
 
 const SignUp: React.FC = () => {
   const router = useRouter();
@@ -9,7 +11,11 @@ const SignUp: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [toast, setToast] = useState<ToastState>({
+    isOpen: false,
+    message: "",
+    type: "error",
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,14 +35,16 @@ const SignUp: React.FC = () => {
         router.push("/signin");
       } else {
         if (data.errors) {
-          const detailedErrors = data.errors.map((error: any) => error.message).join(", ");
-          setError(detailedErrors);
+          const errorMessage = data.errors
+            ? data.errors.map((error: any) => error.message).join(", ")
+            : data.message || "An error occurred";
+          setToast({ isOpen: true, message: errorMessage, type: "error" });
         } else {
-          setError(data.message || "An error occurred");
+          setToast({ isOpen: true, message: "An error occurred", type: 'error' });
         }
       }
     } catch (err) {
-      setError("An error occurred");
+      setToast({ isOpen: true, message: "An error occurred", type: 'error' });
     }
   };
 
@@ -45,14 +53,13 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="relative bottom-20 flex w-full max-w-xs flex-col gap-5 sm:bottom-0 lg:bottom-20 xl:gap-7">
+    <div className="relative bottom-20 flex w-full max-w-[350px] flex-col gap-5 sm:bottom-0 lg:bottom-20 xl:gap-7">
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <div className="text-4xl mb-6 font-bold">Sign Up</div>
-        {error && <div className="text-red mb-4">{error}</div>}
-        <div className="flex flex-col space-y-6 font-normal">
+        <div className="flex flex-col space-y-6 font-normal w-full">
           <input
             placeholder="Username"
-            className="py-4 px-5 w-[350px] text-black rounded-md"
+            className="py-4 px-5 w-full sm:w-[350px] text-black rounded-md"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -60,12 +67,12 @@ const SignUp: React.FC = () => {
           <input
             type="email"
             placeholder="Email"
-            className="py-4 px-5 w-[350px] text-black rounded-md"
+            className="py-4 px-5 w-full sm:w-[350px] text-black rounded-md"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <div className="relative w-[350px]">
+          <div className="relative w-full sm:w-[350px]">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -91,7 +98,7 @@ const SignUp: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="mt-4 rounded-lg py-3 px-5 w-[350px] text-white bg-red"
+          className="mt-4 rounded-lg py-3 px-5 w-full sm:w-[350px] text-white bg-red"
         >
           Submit
         </button>
@@ -105,6 +112,7 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       </form>
+      <Toast isOpen={toast.isOpen} message={toast.message} type={toast.type} closeToast={() => setToast({ ...toast, isOpen: false })} />
     </div>
   );
 };

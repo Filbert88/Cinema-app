@@ -8,7 +8,7 @@ import Toast from "@/src/components/toast";
 
 type ToastType = "info" | "error" | "success";
 
-interface ToastState {
+export interface ToastState {
   isOpen: boolean;
   message: string;
   type: ToastType;
@@ -49,18 +49,18 @@ const Balance: React.FC<BalanceProps> = ({ initialBalance, userId, name }) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 2,
+      minimumFractionDigits: 0,
     }).format(value);
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center pb-5 px-5 sm:px-10 bg-black">
+    <div className="relative bottom-20 flex flex-col min-h-screen items-center justify-center pb-5 px-5 sm:px-10 bg-black">
       <div>
-        <div className="text-center text-5xl font-bold">
+        <div className="text-center text-4xl sm:text-5xl font-bold">
           Hello
-          <span className="capitalize"> {name} </span>
+          <span className="capitalize text-[#64ffda]"> {name} </span>
         </div>
-        <div className="text-3xl">Current Balance: {formatRupiah(balance)}</div>
+        <div className=" text-2xl sm:text-3xl text-center">Current Balance: {formatRupiah(balance)}</div>
         <div className="space-x-6 justify-center flex flex-row mt-8">
           <button
             onClick={toggleWithdrawModal}

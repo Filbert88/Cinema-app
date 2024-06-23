@@ -12,7 +12,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, isOpen, closeToast }) => {
     if (isOpen) {
       const timer = setTimeout(() => {
         closeToast();
-      }, 3000); // Toast will disappear after 3 seconds
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [isOpen, closeToast]);

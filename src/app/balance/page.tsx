@@ -22,11 +22,13 @@ const BalancePage = async () => {
   const initialBalance = user?.balance ? Number(user.balance) : 0;
 
   return (
-    <Balance
-      initialBalance={initialBalance}
-      userId={session.user.id}
-      name={session.user.name}
-    />
+    <main className="bg-black">
+      <Balance
+        initialBalance={initialBalance}
+        userId={session.user.id}
+        name={session.user.name}
+      />
+    </main>
   );
 };
 

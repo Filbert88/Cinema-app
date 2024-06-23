@@ -42,7 +42,7 @@ export default function Mainpage({ movies, session }: MainpageProps) {
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-white text-4xl mb-12 font-bold">Now Playing</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-16 w-fit">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-8 w-fit">
         {movies.map((movie) => (
           <Card
             key={movie.id}

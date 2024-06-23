@@ -13,7 +13,7 @@ const config: Config = {
       colors: {
         red: "#E50914",
         black: "#141414",
-        customGreen: "#3fb160"
+        'custom-green': "#3fb160"
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
