@@ -19,9 +19,9 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({
   const [amount, setAmount] = useState("");
   const maxWithdraw = 500000;
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     const numAmount = parseInt(amount);
-    if (numAmount > maxWithdraw) {
+    if (numAmount <= 0 || numAmount > maxWithdraw) {
       showExceedToast();
       return;
     }
@@ -29,7 +29,27 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({
       alert("Insufficient balance");
       return;
     }
-    setBalance(balance - numAmount);
+
+    try {
+      const response = await fetch('/api/withdraw', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: numAmount }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setBalance(data.balance);
+      } else {
+        alert(data.message || "Withdraw failed");
+      }
+    } catch (error) {
+      console.error('Withdraw error:', error);
+      alert("Withdraw failed");
+    }
+
     toggleModal();
   };
 

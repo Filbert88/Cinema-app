@@ -1,10 +1,9 @@
-// src/app/api/topup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/src/lib/auth';
 import { db } from '@/src/lib/db';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
@@ -18,28 +17,31 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const user = await db.user.update({
-      where: { id: session.user.id },
+    const user = await db.user.findUnique({ where: { id: session.user.id } });
+
+    if (!user || user.balance < amount) {
+      return NextResponse.json({ message: "Insufficient Balance" }, { status: 400 });
+    }
+
+    const updatedUser = await db.user.update({
+      where: { id: user.id },
       data: {
         balance: {
-          increment: amount,
+          decrement: amount,
         },
         transactions: {
           create: {
             amount,
-            type: "topup",
+            type: 'withdraw',
           },
         },
       },
-      select: { balance: true },
     });
 
-    const balance = user.balance.toString(); 
-
-    console.log('Top-up successful, new balance:', balance);
+    const balance = updatedUser.balance.toString();
     return NextResponse.json({ balance: balance });
   } catch (error) {
-    console.error("Error in top-up:", error);
+    console.error('Error in withdraw:', error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
