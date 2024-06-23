@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Movie } from "./mainPage";
+import { useRouter } from "next/navigation";
+import Modal from "./modal";
 
 interface PopupProps {
   movie: Movie;
   session: any;
 }
+
+
 
 export default function Popup({ movie, session } : PopupProps) {
   const getAdjustedDate = (offsetHours = 7) => {
@@ -50,13 +54,68 @@ export default function Popup({ movie, session } : PopupProps) {
     return dateTime < new Date();
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTime, setSelectedTime] = useState('');
+  const [tickets, setTickets] = useState("");  // Default to 1 ticket
+
+  const ModalAmount = () => {
+    if (!showModal) return null;
+  
+    return (
+      
+      <Modal
+        isOpen={showModal}
+        title="Ticket Amount"
+        description="How many tickets do you want to buy?"
+        onClose={() => setShowModal(false)}
+        onConfirm={handleBuyTickets}
+        confirmText="Confirm"
+        inputValue={tickets}
+        onInputChange={setTickets}
+    />
+    );
+  };
+  
+
+  const router = useRouter()
+
+  const formatDateAndTimeForUrl = (date: string, time: string) => {
+    console.log('Received date:', date);
+    console.log('Received time:', time);
+  
+    // Convert date format from "YYYY/MM/DD" to "YYYY-MM-DD"
+    const normalizedDate = date.replace(/\//g, '-');
+    console.log('Normalized date:', normalizedDate);
+  
+    const dateTimeString = `${normalizedDate}T${time}`;
+    console.log('Combined dateTimeString:', dateTimeString);
+  
+    const dateTime = new Date(dateTimeString);
+    if (isNaN(dateTime.getTime())) {
+      throw new Error(`Invalid date or time: ${dateTimeString}`);
+    }
+
+    const now = new Date();
+    return encodeURIComponent(dateTime.toISOString());
+  };
+
   // untuk ngebook ticket
   const handleTimeClick = (date: string, time: string) => {
     if (session && session.user) {
-      alert(`User ${session.user.id} selected time ${time} on ${date}`);
+      setSelectedTime(time);  // Save the selected time
+      setShowModal(true);  // Open the modal
     } else {
       alert("Please sign in to book a ticket");
     }
+  };
+
+  const handleBuyTickets = () => {
+    const dateTimeParam = formatDateAndTimeForUrl(formattedToday, selectedTime);
+    alert(`User ${session.user.id} selected ${tickets} tickets for ${selectedTime} on ${formattedToday}`);
+    // Here you could actually send the buy request or navigate
+    const ticket_amount = parseInt(tickets);
+    router.push(`/movies/${movie.id}/${dateTimeParam}/${ticket_amount}`);
+    setShowModal(false);  // Close the modal
   };
 
   return (
@@ -156,6 +215,8 @@ export default function Popup({ movie, session } : PopupProps) {
           </div>
         )}
       </div>
+      <ModalAmount/>
+      
     </div>
   );
 }

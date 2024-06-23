@@ -5,23 +5,24 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const paths = [
-  {
-    name: "Home",
-    url: "/",
-  },
-  {
-    name: "My Tickets",
-    url: "",
-  },
-  {
-    name: "Balance",
-    url: "/balance",
-  },
-  {
-    name: "Profile",
-    url: "",
-  },
-];
+    {
+        name: "Home",
+        url: "/mainPage"
+    },
+    {
+        name: "My Tickets",
+        url: ""
+    },
+    {
+        name: "Balance",
+        url: "/balance"
+    },
+    {
+        name: "Profile",
+        url: ""
+    },
+
+]
 
 function Navbar() {
   const router = useRouter();
