@@ -12,7 +12,7 @@ export const Card: React.FC<CardProps> = ({ path, title, desc, onClick }) => {
   return (
     <div className="cursor-pointer" onClick={onClick}>
       <div className="flex flex-col items-center">
-        <div className="relative w-[250px]">
+        <div className="w-[250px]">
           <Image 
             className="aspect-[2/3] w-full rounded-xl" 
             src={path} 
