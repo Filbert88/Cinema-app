@@ -30,7 +30,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
   const serializedMovie = { ...movie, id: movie.id.toString() };
 
   return (
-    <div>
+    <div className="bg-black">
       <MovieDetail movie={serializedMovie} session={session} />
     </div>
   );

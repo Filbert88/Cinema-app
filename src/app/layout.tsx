@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import { Providers } from "./providers";
 import Navbar from "../components/navbar";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../lib/auth";
+import { LoadingProvider } from "../contexts/LoadingContext";
+import LoadingSpinner from "../components/loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,15 +20,19 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
-      <body style={{ fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
-        <Providers>
-          <Navbar/>
-          <div style={{ paddingTop: "60px" }}>
-            {children}
-          </div>
-        </Providers>
-      </body>
-    </html>
+    <LoadingProvider>
+      <html lang="en">
+        <body style={{ fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
+          <Providers>
+            <Navbar />
+            <div className="bg-black">
+              <LoadingSpinner />
+              {children}
+            </div>
+          </Providers>
+        </body>
+      </html>
+    </LoadingProvider>
+
   );
 }

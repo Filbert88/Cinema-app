@@ -118,7 +118,7 @@ export default function Popup({ movie, session } : PopupProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-5 sm:p-10 bg-black">
+    <div className="flex min-h-screen flex-col items-center justify-between p-5 sm:p-10 bg-black mt-10">
       <div className="flex flex-col w-full max-w-3xl">
         <div className="flex flex-col">
           <div className="flex flex-col gap-4 sm:hidden">

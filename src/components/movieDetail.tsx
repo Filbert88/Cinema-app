@@ -13,7 +13,7 @@ export default function MovieDetail({ movie, session }: MovieDetailProps) {
     return <p>Movie not found!</p>;
   }
   return (
-    <div>
+    <div className="bg-black">
       <Popup movie={movie} session={session} />
     </div>
   );
