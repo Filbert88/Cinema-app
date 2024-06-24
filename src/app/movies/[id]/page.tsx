@@ -3,8 +3,9 @@ import { authOptions } from "@/src/lib/auth";
 import { PrismaClient } from "@prisma/client";
 import React from "react";
 import MovieDetail from "@/src/components/movieDetail";
+import { db } from "@/src/lib/db";
 
-const prisma = new PrismaClient();
+
 
 export default async function MovieDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -18,7 +19,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
     return <p>Invalid movie ID.</p>;
   }
 
-  const movie = await prisma.movie.findUnique({
+  const movie = await db.movie.findUnique({
     where: { id: bigintId },
   });
 

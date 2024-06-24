@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../lib/auth";
+import { Session } from "inspector";
+import { signOut } from "next-auth/react";
 
 const paths = [
     {
@@ -11,7 +15,7 @@ const paths = [
     },
     {
         name: "My Tickets",
-        url: ""
+        url: "/myTicket"
     },
     {
         name: "Balance",
@@ -24,10 +28,17 @@ const paths = [
 
 ]
 
-function Navbar() {
+function Navbar({session}: any) {
   const router = useRouter();
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
 
+  
+  // Check session on component mount
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    window.location.reload();
+  }; 
   const handleNavigation = (url: string) => {
     router.push(url);
   };
@@ -56,25 +67,35 @@ function Navbar() {
         </button>
         <div className="flex flex-col items-center gap-6 justify-center xl:flex-row">
           {paths.map((path) => (
-            <Link className="text-xl font-bold" href={path.url}>
+            <Link key={path.name} className="text-xl font-bold" href={path.url}>
               {path.name}
             </Link>
           ))}
         </div>
-        <div className="flex flex-col xl:flex-row gap-6 justify-center items-center">
-          <button
-            className="px-5 py-3 rounded-xl bg-black xl:bg-red  font-bold text-xl"
-            onClick={() => handleNavigation("/signin")}
-          >
-            Log In
-          </button>
+
+        {session && session.user ? (
           <button
             className="px-5 py-3 rounded-xl bg-black xl:bg-red font-bold text-xl"
-            onClick={() => handleNavigation("/signup")}
+            onClick={handleLogout}
           >
-            Sign up
+            Log Out
           </button>
-        </div>
+        ) : (
+          <div className="flex flex-col xl:flex-row gap-6 justify-center items-center">
+            <button
+              className="px-5 py-3 rounded-xl bg-black xl:bg-red font-bold text-xl"
+              onClick={() => router.push("/signin")}
+            >
+              Log In
+            </button>
+            <button
+              className="px-5 py-3 rounded-xl bg-black xl:bg-red font-bold text-xl"
+              onClick={() => router.push("/signup")}
+            >
+              Sign Up
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

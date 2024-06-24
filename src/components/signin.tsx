@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter ,redirect} from "next/navigation";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import Toast from "./toast";
@@ -102,7 +102,7 @@ const Signin: React.FC = () => {
     if (result?.error) {
       setToast({ isOpen: true, message: result.error, type: "error" });
     } else {
-      router.push("/");
+        router.push('/')
     }
   };
 

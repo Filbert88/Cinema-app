@@ -35,6 +35,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ id, date, title, price, seatS
             return;
         }
 
+        if(selectedSeats.length != limit){
+            alert("You haven't choose all your seat");
+            return;
+        }
+
         try {
             const response = await fetch('/api/tickets',{
                 method: 'POST',
@@ -124,7 +129,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ id, date, title, price, seatS
                                 sold = {seatSoldIds.includes(index+1)}
                                 selectedSeats = {selectedSeats}
                                 setSelectedSeats = {setSelectedSeats}
-                                
+                                limit={limit}
                                 ></Seat>
                         );
                     })}

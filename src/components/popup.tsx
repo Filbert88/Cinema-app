@@ -111,7 +111,6 @@ export default function Popup({ movie, session } : PopupProps) {
 
   const handleBuyTickets = () => {
     const dateTimeParam = formatDateAndTimeForUrl(formattedToday, selectedTime);
-    alert(`User ${session.user.id} selected ${tickets} tickets for ${selectedTime} on ${formattedToday}`);
     // Here you could actually send the buy request or navigate
     const ticket_amount = parseInt(tickets);
     router.push(`/movies/${movie.id}/${dateTimeParam}/${ticket_amount}`);

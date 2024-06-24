@@ -82,14 +82,15 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/src/lib/auth";
 import Mainpage from "@/src/components/mainPage";
+import { db } from "@/src/lib/db";
 
 
-const prisma = new PrismaClient();
+
 
 export default async function MainPage() {
   const session = await getServerSession(authOptions);
 
-  const movies = await prisma.movie.findMany({
+  const movies = await db.movie.findMany({
     select: {
       id: true,
       title: true,
