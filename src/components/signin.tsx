@@ -5,6 +5,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import Toast from "./toast";
 import { ToastState } from "./balance";
+import LoadingSpinner from "./loading";
 
 interface Errors {
   email: string;
@@ -31,6 +32,7 @@ const Signin: React.FC = () => {
     message: "",
     type: "error",
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleBlur = (field: keyof Touched): void => {
     setTouched({ ...touched, [field]: true });
@@ -92,6 +94,8 @@ const Signin: React.FC = () => {
       return;
     }
 
+    setLoading(true);
+
     const result = await signIn("credentials", {
       redirect: false,
       email,
@@ -101,10 +105,15 @@ const Signin: React.FC = () => {
     console.log(result);
     if (result?.error) {
       setToast({ isOpen: true, message: result.error, type: "error" });
+      setLoading(false);
     } else {
         router.push('/')
     }
   };
+
+  if(loading){
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="relative bottom-20 flex w-full max-w-[350px] flex-col gap-5 sm:bottom-0 lg:bottom-20 xl:gap-7">

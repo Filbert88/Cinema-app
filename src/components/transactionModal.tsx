@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns"; // Import necessary functions
+import LoadingSpinner from "./loading";
 
 interface Transaction {
   id: number;
@@ -64,7 +65,9 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         <div className="px-5 pb-5">
           <div className="text-center">
             {loading ? (
-              <div className="text-white">Loading...</div>
+              <div className="relative top-20">
+                <LoadingSpinner />
+              </div>
             ) : error ? (
               <div className="text-red-500">{error}</div>
             ) : transactions.length === 0 ? (
@@ -81,7 +84,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   {" - "}
                   <span
                     style={{
-                      color: transaction.type === "topup" ? "#3fb160" : "red"
+                      color: transaction.type === "topup" ? "#3fb160" : "red",
                     }}
                   >
                     {transaction.type === "topup" ? "+" : "-"}

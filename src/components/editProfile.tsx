@@ -3,6 +3,7 @@ import { useState } from "react";
 import Toast from "./toast";
 import Balance, { ToastState } from "./balance";
 import { signIn, useSession } from "next-auth/react";
+import DimmedLoad from "./dimmedLoad";
 
 interface UserProfile {
   name: string | null;
@@ -14,12 +15,16 @@ interface EditProfileFormProps {
   user: UserProfile;
   setUser: (user: UserProfile) => void;
   setEditing: (editing: boolean) => void;
+  setLoading: (loading: boolean) => void;
+  showToast: (message: string, type: "info" | "error" | "success") => void;
 }
 
 const EditProfileForm = ({
   user,
   setUser,
   setEditing,
+  setLoading, 
+  showToast
 }: EditProfileFormProps) => {
   const { data: session, update } = useSession();
   const [formData, setFormData] = useState({
@@ -28,7 +33,6 @@ const EditProfileForm = ({
     password: "",
     confirmPassword: "",
   });
-
   const [toast, setToast] = useState<ToastState>({
     isOpen: false,
     message: "",
@@ -37,22 +41,6 @@ const EditProfileForm = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const refreshSession = async () => {
-    try {
-      const sessionResponse = await fetch('/api/auth/session');
-      if (sessionResponse.ok) {
-        const newSessionData = await sessionResponse.json();
-        update(newSessionData);  
-      } else {
-        console.error('Failed to fetch session data');
-     
-      }
-    } catch (error) {
-      console.error('Error fetching session:', error);
-
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,6 +64,8 @@ const EditProfileForm = ({
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await fetch("/api/profile", {
         method: "PUT",
@@ -94,8 +84,6 @@ const EditProfileForm = ({
         setUser({ ...user, name: updatedUser.name, email: updatedUser.email });
         setEditing(false);
 
-        await refreshSession();
-
         await update({
           ...session,
           user: {
@@ -105,6 +93,8 @@ const EditProfileForm = ({
             Balance: updatedUser.balance,
           },
         });
+
+        showToast("Profile updated successfully!", "success");
       } else {
         const errorData = await response.json();
         setToast({
@@ -120,6 +110,8 @@ const EditProfileForm = ({
         message: "Failed to update profile",
         type: "error",
       });
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -173,8 +165,7 @@ const EditProfileForm = ({
           Update Profile
         </button>
         <button
-          type="button"
-          className="ml-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="ml-2 bg-red text-white px-4 py-2 rounded hover:bg-red-600"
           onClick={() => setEditing(false)}
         >
           Cancel
