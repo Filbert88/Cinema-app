@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const paths = [
     {
         name: "Home",
-        url: "/mainPage"
+        url: "/"
     },
     {
         name: "My Tickets",
@@ -19,7 +19,7 @@ const paths = [
     },
     {
         name: "Profile",
-        url: ""
+        url: "/profile"
     },
 
 ]

@@ -72,9 +72,12 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token && typeof token.id === "string") {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
+        const user = await db.user.findUnique({ where: { id: token.id } });
+        if (user) {
+          session.user.id = user.id;
+          session.user.name = user.name;
+          session.user.email = user.email;
+        }
       }
       return session;
     },
