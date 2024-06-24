@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Popup from "@/src/components/popup";
 import { Card } from "@/src/components/card";
+import LoadingSpinner from "./loading";
 
 export interface Movie {
   id: string;
@@ -24,9 +24,10 @@ export default function Mainpage({ movies, session }: MainpageProps) {
   "use client";
   const router = useRouter();
   const { data: clientSession, status } = useSession();
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleCardClick = (movie: Movie) => {
+    setLoading(true);
     if (clientSession && clientSession.user) {
       const userId = clientSession.user.id;
       router.push(`/movies/${movie.id}?user=${userId}`);
@@ -35,8 +36,8 @@ export default function Mainpage({ movies, session }: MainpageProps) {
     }
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
+  if (loading || status === "loading") {
+    return <LoadingSpinner />;
   }
 
   return (

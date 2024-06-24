@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!existingUser) {
-          throw new Error("Email not found");
+          throw new Error("Email not valid");
         }
 
         const passwordMatch = await compare(

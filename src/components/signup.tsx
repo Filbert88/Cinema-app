@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Toast from "./toast";
 import { ToastState } from "./balance";
+import LoadingSpinner from "./loading";
 
 const SignUp: React.FC = () => {
   const router = useRouter();
@@ -16,10 +17,38 @@ const SignUp: React.FC = () => {
     message: "",
     type: "error",
   });
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const validateUsername = (username: string): string => {
+    if (username.length < 3) {
+      return "Username must be at least 3 characters long.";
+    }
+    return "";
+  };
+
+  const validateEmail = (email: string): string => {
+    if (!email.includes("@")) {
+      return "Please enter a valid email.";
+    }
+    return "";
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const usernameError = validateUsername(username);
+    const emailError = validateEmail(email);
+
+    if (usernameError || emailError) {
+      setToast({
+        isOpen: true,
+        message: usernameError || emailError,
+        type: "error",
+      });
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await fetch("/api/user", {
         method: "POST",
@@ -34,19 +63,21 @@ const SignUp: React.FC = () => {
       if (response.ok) {
         router.push("/signin");
       } else {
-        if (data.errors) {
-          const errorMessage = data.errors
-            ? data.errors.map((error: any) => error.message).join(", ")
-            : data.message || "An error occurred";
-          setToast({ isOpen: true, message: errorMessage, type: "error" });
-        } else {
-          setToast({ isOpen: true, message: "An error occurred", type: 'error' });
-        }
+        const errorMessage = data.errors
+          ? data.errors.map((error: any) => error.message).join(", ")
+          : data.message || "An error occurred";
+        setToast({ isOpen: true, message: errorMessage, type: "error" });
       }
     } catch (err) {
-      setToast({ isOpen: true, message: "An error occurred", type: 'error' });
+      setToast({ isOpen: true, message: "An error occurred", type: "error" });
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -65,7 +96,6 @@ const SignUp: React.FC = () => {
             required
           />
           <input
-            type="email"
             placeholder="Email"
             className="py-4 px-5 w-full sm:w-[350px] text-black rounded-md"
             value={email}
@@ -112,7 +142,12 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       </form>
-      <Toast isOpen={toast.isOpen} message={toast.message} type={toast.type} closeToast={() => setToast({ ...toast, isOpen: false })} />
+      <Toast
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        closeToast={() => setToast({ ...toast, isOpen: false })}
+      />
     </div>
   );
 };

@@ -93,11 +93,13 @@ const Balance: React.FC<BalanceProps> = ({ initialBalance, userId, name }) => {
           showExceedToast={showExceedToast}
           balance={balance}
           setBalance={setBalance}
+          setToast={setToast}
         />
         <TopUpModal
           isOpen={isTopUpModalOpen}
           toggleModal={toggleTopUpModal}
           setBalance={setBalance}
+          setToast={setToast}
         />
         <Toast
           isOpen={toast.isOpen}
