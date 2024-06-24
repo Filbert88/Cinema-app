@@ -107,7 +107,8 @@ const Signin: React.FC = () => {
       setToast({ isOpen: true, message: result.error, type: "error" });
       setLoading(false);
     } else {
-        router.push('/')
+      router.refresh();
+      router.push("/");
     }
   };
 

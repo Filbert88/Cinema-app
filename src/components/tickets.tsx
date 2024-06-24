@@ -38,7 +38,7 @@ export function ShowTicket({ pastTickets, activeTickets }: ShowTicketsProps) {
       </div>
       <div className="w-1/2 flex flex-col gap-10 items-center">
           {ticketsToShow.map(ticket => (
-            <div key={ticket.movie.id.toString()} className="grid grid-cols-4 gap-4 text-white items-center justify-center border-b-2 border-b-white shadow-lg p-4">
+            <div key={ticket.movie.id.toString()} className="grid grid-cols-4 w-full gap-4 text-white items-center justify-center border-b-2 border-b-white shadow-lg p-4">
               <div className="flex flex-col items-center justify-center">
                 <img src={ticket.movie.poster_url} alt={ticket.movie.title} style={{ width: '100px', height: '150px' }} />
               </div>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import { Session } from "inspector";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const paths = [
     {
@@ -28,16 +28,16 @@ const paths = [
 
 ]
 
-function Navbar({session}: any) {
+function Navbar() {
   const router = useRouter();
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
 
-  
+  const { data: session } = useSession();
   // Check session on component mount
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    window.location.reload();
+    router.push('/signin')
   }; 
   const handleNavigation = (url: string) => {
     router.push(url);
