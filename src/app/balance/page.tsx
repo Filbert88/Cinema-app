@@ -3,11 +3,9 @@ import { authOptions } from "@/src/lib/auth";
 import { db } from "@/src/lib/db";
 import Balance from "@/src/components/balance";
 import { redirect } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 const BalancePage = async () => {
-  const { data: session } = useSession();
-  // const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     redirect("/signin");
